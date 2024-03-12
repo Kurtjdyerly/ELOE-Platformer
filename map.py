@@ -173,41 +173,43 @@ class TileMap:
             surface.blit(tile.image, tile.rect.topleft)
 
 
-pygame.init()
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 350
-FPS = 60
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Your Game Title")
-map_filename = "test.csv"
-spritesheet = Spritesheet()  # Create an instance of Spritesheet
-my_map = Map(map_filename)
+# testing code
+
+# pygame.init()
+# SCREEN_WIDTH = 1000
+# SCREEN_HEIGHT = 350
+# FPS = 60
+# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# pygame.display.set_caption("Your Game Title")
+# map_filename = "test.csv"
+# spritesheet = Spritesheet()  # Create an instance of Spritesheet
+# my_map = Map(map_filename)
 
 
-tile_map = TileMap(spritesheet, my_map.stitch_map())
+# tile_map = TileMap(spritesheet, my_map.stitch_map())
 
-clock = pygame.time.Clock()
+# clock = pygame.time.Clock()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+# running = True
+# while running:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
 
-    tile_map.load_map()
+#     tile_map.load_map()
 
-    # Drawing
-    screen.fill((255, 255, 255))  # Set background color (adjust as needed)
+#     # Drawing
+#     screen.fill((255, 255, 255))  # Set background color (adjust as needed)
 
-    tile_map.draw_map(screen)
+#     tile_map.draw_map(screen)
 
-    pygame.display.flip()
+#     pygame.display.flip()
 
-    # Cap the frame rate
-    clock.tick(FPS)
+#     # Cap the frame rate
+#     clock.tick(FPS)
 
-# Quit Pygame properly
-pygame.quit()
+# # Quit Pygame properly
+# pygame.quit()
 
     
         
