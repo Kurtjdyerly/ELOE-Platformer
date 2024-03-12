@@ -1,9 +1,10 @@
 # intial Code from https://docs.replit.com/tutorials/python/2d-platform-game
-import pygame, numpy
+import pygame, numpy, sys
 
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND = (0, 0, 0)
+
 
 
 class Sprite(pygame.sprite.Sprite):
@@ -163,15 +164,8 @@ class Box(Sprite):
     def __init__(self, startx, starty):
         super().__init__("./assets/box.png", startx, starty)
         
-
-
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    clock = pygame.time.Clock()
-
+def game_loop(screen, clock):
     player = Player(WIDTH / 2, HEIGHT / 2)
-
     enemies = pygame.sprite.Group()
     enemy = Enemy(200, 100)
     enemies.add(enemy)
@@ -187,24 +181,15 @@ def main():
         pygame.event.pump()
         player.update(environment, enemies)
         enemy.update(environment)
-        
+
         if not player.is_alive:
-            player = Player(WIDTH / 2, HEIGHT / 2)
-
-            enemies = pygame.sprite.Group()
-            enemy = Enemy(200, 100)
-            enemies.add(enemy)
-
-            environment = pygame.sprite.Group()
-            for bx in range(-10000, 10000, 70):
-                environment.add(Box(bx, 400))
-
-            environment.add(Box(330, 230))
-            environment.add(Box(400, 70))
-
-
-
-        # Draw loop
+            if game_over_screen(screen):
+                # Restart the game
+                player.is_alive = True
+                player.rect.center = [WIDTH / 2, HEIGHT / 2]
+            else:
+                return  
+        
         screen.fill(BACKGROUND)
         player.draw(screen)
         enemies.draw(screen)
@@ -212,6 +197,104 @@ def main():
         pygame.display.flip()
 
         clock.tick(60)
+
+def title_screen(screen):
+    screen.fill(BACKGROUND)
+    font = pygame.font.Font(None, 36)
+    title_text = font.render("2D Platformer Game", True, (255, 255, 255))
+    start_text = font.render("Press 'S' to start", True, (255, 255, 255))
+    controls_text = font.render("Press 'C' for controls", True, (255, 255, 255))
+    quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
+
+    screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 200))
+    screen.blit(start_text, (WIDTH // 2 - start_text.get_width() // 2, 300))
+    screen.blit(controls_text, (WIDTH // 2 - controls_text.get_width() // 2, 350))
+    screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, 400))
+
+    pygame.display.flip()
+
+def show_controls(screen):
+    font = pygame.font.Font(None, 36)
+    title_text = font.render("Controls", True, (255, 255, 255))
+    back_text = font.render("Press 'B' to go back", True, (255, 255, 255))
+    controls_text = [
+        font.render("Arrow keys: Move", True, (255, 255, 255)),
+        font.render("Up arrow: Jump", True, (255, 255, 255)),
+        font.render("S: Start game", True, (255, 255, 255)),
+        font.render("Q: Quit game", True, (255, 255, 255))
+    ]
+
+    screen.fill(BACKGROUND)
+    screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 100))
+
+    y_offset = 200
+    for text in controls_text:
+        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, y_offset))
+        y_offset += 50
+
+    screen.blit(back_text, (WIDTH // 2 - back_text.get_width() // 2, 500))
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_b:
+                    # Go back to the title screen
+                    title_screen(screen)
+                    return
+
+def game_over_screen(screen):
+    screen.fill(BACKGROUND)
+    font = pygame.font.Font(None, 36)
+    game_over_text = font.render("Game Over", True, (255, 0, 0))
+    try_again_text = font.render("Press 'T' to try again", True, (255, 255, 255))
+    quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
+
+    screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, 200))
+    screen.blit(try_again_text, (WIDTH // 2 - try_again_text.get_width() // 2, 300))
+    screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, 350))
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_t:
+                    # Restart the game
+                    return True
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    clock = pygame.time.Clock()
+
+    title_screen(screen)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_s:
+                    # Start the game
+                    game_loop(screen, clock)
+                elif event.key == pygame.K_c:
+                    # Show controls (you can implement this part)
+                    show_controls(screen)
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+
 
 
 if __name__ == "__main__":
