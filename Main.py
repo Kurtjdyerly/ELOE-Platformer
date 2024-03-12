@@ -4,6 +4,7 @@ import pygame, numpy, sys
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND = (0, 0, 0)
+INVISIBLE_WALL_WIDTH = 10
 
 
 
@@ -147,6 +148,18 @@ class Enemy(Sprite):
         self.speed = 2
         self.direction = 1  # 1 for right, -1 for left
 
+    def create_invisible_walls(self, environment):
+    # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
+        if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or \
+                self.rect.left > WIDTH - 5 or self.rect.right < 5:
+            # Create invisible walls
+            invisible_wall_left = Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,
+                                        INVISIBLE_WALL_WIDTH, self.rect.height)
+            invisible_wall_right = Box(self.rect.right, self.rect.top,
+                                        INVISIBLE_WALL_WIDTH, self.rect.height)
+            environment.add(invisible_wall_left)
+            environment.add(invisible_wall_right)
+
     def update(self, boxes):
         self.rect.x += self.speed * self.direction
         # Reverse direction if reaching boundaries
@@ -167,7 +180,7 @@ class Box(Sprite):
 def game_loop(screen, clock):
     player = Player(WIDTH / 2, HEIGHT / 2)
     enemies = pygame.sprite.Group()
-    enemy = Enemy(200, 100)
+    enemy = Enemy(600, 200)
     enemies.add(enemy)
 
     environment = pygame.sprite.Group()
