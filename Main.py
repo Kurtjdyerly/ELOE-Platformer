@@ -199,7 +199,7 @@ def game_loop(screen, clock):
     environment = pygame.sprite.Group()
     for bx in range(-10000, 10000, 70):
         environment.add(Box(bx, 400))
-
+ 
     environment.add(Box(330, 230))
     environment.add(Box(400, 70))
 
