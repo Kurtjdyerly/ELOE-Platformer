@@ -1,11 +1,23 @@
 import pygame, csv, os, random
-from map import Map
-
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 # Change the working directory to the script's directory
 os.chdir(script_dir)
+class Sprite(pygame.sprite.Sprite):
+    def __init__(self, image, startx, starty):
+        super().__init__()
+
+        self.image = pygame.image.load(image)
+        self.rect = self.image.get_rect()
+
+        self.rect.center = [startx, starty]
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
 
 class Map:
     def __init__(self, filename):
@@ -91,7 +103,7 @@ class Spritesheet:
         return sprite
 
     
-class Tile:
+class Tile(pygame.sprite.Sprite):
     def __init__(self, sprite, x, y, target_size=(70, 70)):
         # Resize the image to the target size
         self.image = pygame.transform.scale(sprite, target_size)
@@ -107,7 +119,7 @@ class TileMap:
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
         self.completed_map = completed_map
-        self.tiles = []
+        self.tiles = pygame.sprite.Group()
         self.load_map()
 
     def load_map(self):
