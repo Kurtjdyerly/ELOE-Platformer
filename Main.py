@@ -282,7 +282,8 @@ def game_over_screen(screen):
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_t:
-                    # Restart the game
+                    clock = pygame.time.Clock()
+                    game_loop(screen, clock)
                     return True
                 elif event.key == pygame.K_q:
                     pygame.quit()
