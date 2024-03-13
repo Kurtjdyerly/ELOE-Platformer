@@ -1,4 +1,5 @@
 import pygame, csv, os, random
+from map import Map
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))

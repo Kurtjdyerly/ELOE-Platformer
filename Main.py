@@ -58,6 +58,7 @@ class Player(Sprite):
     def update(self, environment, enemies):
         hsp = 0
         onground = self.check_collision(0, 1, environment)
+        
         # check keys
         key = pygame.key.get_pressed()
         if key[pygame.K_LEFT]:
@@ -105,10 +106,12 @@ class Player(Sprite):
         dy = y
         dxPlayer = 0
         
-        if (dx > 0 and self.rect.x < (WIDTH - (WIDTH / 4))):
+        if (dx > 0 and self.rect.x < (WIDTH - (WIDTH / 2))):
             dxPlayer = dx
+            dx = 0 
         elif (dx < 0 and self.rect.x > WIDTH / 4):
             dxPlayer = dx
+            dx = 0
         
 
         while self.check_collision(0, dy, environment):
