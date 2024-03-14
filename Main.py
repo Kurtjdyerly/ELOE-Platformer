@@ -1,7 +1,7 @@
 # intial Code from https://docs.replit.com/tutorials/python/2d-platform-game
 import pygame, numpy
 
-WIDTH = 800
+WIDTH = 1500
 HEIGHT = 600
 BACKGROUND = (0, 0, 0)
 INVISIBLE_WALL_WIDTH = 10
@@ -149,15 +149,12 @@ class Enemy(Sprite):
 
     def create_invisible_walls(self, environment):
     # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
-        if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or \
-                self.rect.left > WIDTH - 5 or self.rect.right < 5:
+        if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or self.rect.left > WIDTH - 5 or self.rect.right < 5:
             # Create invisible walls
-            invisible_wall_left = Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            invisible_wall_right = Box(self.rect.right, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            environment.add(invisible_wall_left)
-            environment.add(invisible_wall_right)
+            #invisible_wall_left = Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,INVISIBLE_WALL_WIDTH, self.rect.height)
+            #invisible_wall_right = Box(self.rect.right, self.rect.top,INVISIBLE_WALL_WIDTH, self.rect.height)
+            environment.add(Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,INVISIBLE_WALL_WIDTH, self.rect.height))
+            environment.add(Box(self.rect.right, self.rect.top,INVISIBLE_WALL_WIDTH, self.rect.height))
 
     def update(self, boxes):
         self.rect.x += self.speed * self.direction
@@ -211,6 +208,16 @@ def main():
             environment = pygame.sprite.Group()
             for bx in range(-10000, 10000, 70):
                 environment.add(Box(bx, 400))
+
+            for enemy in enemies:
+                # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
+                if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or \
+                        enemy.rect.left > WIDTH - 5 or enemy.rect.right < 5:
+                    # Create invisible walls
+                    invisible_wall_left = Box(enemy.rect.left - INVISIBLE_WALL_WIDTH, enemy.rect.top, INVISIBLE_WALL_WIDTH, enemy.rect.height)
+                    invisible_wall_right = Box(enemy.rect.right, enemy.rect.top, INVISIBLE_WALL_WIDTH, enemy.rect.height)
+                    environment.add(invisible_wall_left)
+                    environment.add(invisible_wall_right)
 
             environment.add(Box(330, 230))
             environment.add(Box(400, 70))
