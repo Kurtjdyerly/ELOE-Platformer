@@ -1,6 +1,6 @@
 # intial Code from https://docs.replit.com/tutorials/python/2d-platform-game
 import pygame, numpy, sound, sys
-
+from map import Tile, TileMap, Spritesheet, Map
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND = (0, 0, 0)
@@ -191,13 +191,13 @@ def game_loop(screen, clock):
     # my_map = Map(map_filename)
     # tile_map = TileMap(spritesheet, my_map.stitch_map())
     # tile_map.load_map()
-    # #environment = tile_map.tiles
-    # environment = pygame.sprite.Group()
-    # for sprite in tile_map.tiles:
-    #     environment.add(sprite)
+    # environment = tile_map.tiles
+
+
     
+
     environment = pygame.sprite.Group()
-    for bx in range(-10000, 10000, 70):
+    for bx in range(-100000, 1000000, 70):
         environment.add(Box(bx, 400))
  
     environment.add(Box(330, 230))
