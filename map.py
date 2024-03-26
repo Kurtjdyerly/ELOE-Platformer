@@ -62,15 +62,21 @@ class Map:
         end_maps = self.get_end()
 
         random_number = random.randint(0, 4)
+        beginning_maps[random_number].reverse()
         completed_map.extend(beginning_maps[random_number])
+        beginning_maps[random_number].reverse()
 
         length = len(middle_maps)
         for i in range(25):
             random_number = random.randint(0, length - 1)
+            middle_maps[random_number].reverse()
             completed_map.extend(middle_maps[random_number])
+            middle_maps[random_number].reverse()
 
         random_number = random.randint(0, 4)
+        end_maps[random_number].reverse()
         completed_map.extend(end_maps[random_number])
+        end_maps[random_number].reverse()
 
         return completed_map
     
@@ -101,7 +107,9 @@ class Tile:
     def draw(self, surface):
        surface.blit(self.image, (self.rect.x, self.rect.y))
 
+
 class TileMap:
+    spawns = []
     def __init__(self, spritesheet, completed_map):
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
@@ -159,18 +167,28 @@ class TileMap:
 
             x = x_counter
             for i in row:
-                y = y_counter
                 i = int(i)
-                filename = os.path.join(base_path, region_mapping[i])
-                sprite = self.spritesheet.get_sprite_from_file(filename)
-                tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
-                self.tiles.append(tile)
-                x +=1
+                if i == -1:
+                    x+=1
+                    
+
+                else:
+                    y = y_counter
+                    filename = os.path.join(base_path, region_mapping[i])
+                    sprite = self.spritesheet.get_sprite_from_file(filename)
+                    tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
+                    if i == -2:
+                        spawns.append(tile)
+                    else:
+                        self.tiles.append(tile)
+                    x +=1
             y_counter -= 1
 
     def draw_map(self, surface):
         for tile in self.tiles:
             surface.blit(tile.image, tile.rect.topleft)
+    def return_spawns(self):
+        return spawns
 
 
 pygame.init()
