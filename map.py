@@ -185,13 +185,14 @@ class TileMap:
 
             x = x_counter
             for i in row:
-                y = y_counter
-                i = int(i)
-                filename = os.path.join(base_path, region_mapping[i])
-                # sprite = self.spritesheet.get_sprite_from_file(filename)
-                startx  = x * tile_size
-                starty = y * tile_size
-                self.tiles.add(Tile(filename, startx, starty))
+                if (i != 0):
+                    y = y_counter
+                    i = int(i)
+                    filename = os.path.join(base_path, region_mapping[i])
+                    # sprite = self.spritesheet.get_sprite_from_file(filename)
+                    startx  = x * tile_size
+                    starty = (y * tile_size) + 600
+                    self.tiles.add(Tile(filename, startx, starty))
                 x +=1
             y_counter -= 1
 

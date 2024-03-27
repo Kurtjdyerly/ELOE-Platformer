@@ -186,22 +186,22 @@ def game_loop(screen, clock):
     enemy = Enemy(600, 200)
     enemies.add(enemy)
 
-    # map_filename = "test.csv"
-    # spritesheet = Spritesheet()  # Create an instance of Spritesheet
-    # my_map = Map(map_filename)
-    # tile_map = TileMap(spritesheet, my_map.stitch_map())
-    # tile_map.load_map()
-    # environment = tile_map.tiles
+    map_filename = "test.csv"
+    spritesheet = Spritesheet()  # Create an instance of Spritesheet
+    my_map = Map(map_filename)
+    tile_map = TileMap(spritesheet, my_map.stitch_map())
+    tile_map.load_map()
+    environment = tile_map.tiles
 
 
     
 
-    environment = pygame.sprite.Group()
-    for bx in range(-100000, 1000000, 70):
-        environment.add(Box(bx, 400))
+    # environment = pygame.sprite.Group()
+    # for bx in range(-10000, 10000, 70):
+    #     environment.add(Box(bx, 400))
  
-    environment.add(Box(330, 230))
-    environment.add(Box(400, 70))
+    # environment.add(Box(330, 230))
+    # environment.add(Box(400, 70))
 
     sound.sound()
     print("Game initialized!")
