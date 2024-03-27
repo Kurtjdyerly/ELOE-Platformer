@@ -1,6 +1,20 @@
 import pygame, csv, os, random
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
+class Sprite(pygame.sprite.Sprite): # Superclass for Sprites
+    def __init__(self, image, startx, starty):
+        super().__init__()
+
+        self.image = pygame.image.load(image)
+        self.rect = self.image.get_rect()
+
+        self.rect.center = [startx, starty]
+
+    def update(self):
+        pass
+
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
 
 # Change the working directory to the script's directory
 os.chdir(script_dir)
@@ -102,17 +116,16 @@ class Spritesheet:
         sprite = pygame.image.load(filename).convert()
         return sprite
 
-    
-class Tile(pygame.sprite.Sprite):
-    def __init__(self, sprite, x, y, target_size=(70, 70)):
-        # Resize the image to the target size
-        self.image = pygame.transform.scale(sprite, target_size)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
 
-    def draw(self, surface):
-       surface.blit(self.image, (self.rect.x, self.rect.y))
+    
+class Tile(Sprite):
+    def __init__(self, sprite, startx, starty, target_size=(70, 70)):
+        # Resize the image to the target size
+        super().__init__(sprite, startx, starty)
+        self.image = pygame.transform.scale(self.image, target_size)
+        self.rect = self.image.get_rect()
+        self.rect.x = startx
+        self.rect.y = starty
 
 class TileMap:
     def __init__(self, spritesheet, completed_map):
@@ -123,7 +136,7 @@ class TileMap:
         self.load_map()
 
     def load_map(self):
-        self.tiles.clear()  # Clear existing tiles
+        # self.tiles.clear()  # Clear existing tiles
 
         x, y = 0, 0
         tile_size = self.tile_size
@@ -175,9 +188,10 @@ class TileMap:
                 y = y_counter
                 i = int(i)
                 filename = os.path.join(base_path, region_mapping[i])
-                sprite = self.spritesheet.get_sprite_from_file(filename)
-                tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
-                self.tiles.append(tile)
+                # sprite = self.spritesheet.get_sprite_from_file(filename)
+                startx  = x * tile_size
+                starty = y * tile_size
+                self.tiles.add(Tile(filename, startx, starty))
                 x +=1
             y_counter -= 1
 
