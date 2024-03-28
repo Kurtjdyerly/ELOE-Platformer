@@ -279,21 +279,21 @@ class Map:
     # Gets the beginning maps (first 5) from the total list 
     def get_beg(self):
         beginning_maps = []
-        for item in self.chunk_map[:5]:
+        for item in self.chunk_map[:10]:
             beginning_maps.append(item)
         return beginning_maps
     
     # Get the middle section maps (between the first 5 and the last 5) from the total list
     def get_mid(self):
         middle_maps = []
-        for item in self.chunk_map[5:-5]:
+        for item in self.chunk_map[10:-11]:
             middle_maps.append(item)
         return middle_maps
     
     # Gets the last map sections from the last 5
     def get_end(self):
         end_maps = []
-        for item in self.chunk_map[-5:]:
+        for item in self.chunk_map[-11:]:
             end_maps.append(item)
         return end_maps
     
@@ -340,10 +340,11 @@ class Spritesheet:
         return sprite
 
     
-class Tile:
+class Tile(Sprite):
     def __init__(self, sprite, x, y, target_size=(70, 70)):
         # Resize the image to the target size
-        self.image = pygame.transform.scale(sprite, target_size)
+        super().__init__(sprite, x, y)
+        self.image = pygame.transform.scale(self.image, target_size)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -353,16 +354,18 @@ class Tile:
 
 
 class TileMap:
-    spawns = []
+    
     def __init__(self, spritesheet, completed_map):
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
         self.completed_map = completed_map
-        self.tiles = []
+        self.tiles = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self.end_goal = pygame.sprite.Group()
         self.load_map()
 
     def load_map(self):
-        self.tiles.clear()  # Clear existing tiles
+        # self.tiles.clear()  # Clear existing tiles
 
         x, y = 0, 0
         tile_size = self.tile_size
@@ -419,12 +422,19 @@ class TileMap:
                 else:
                     y = y_counter
                     filename = os.path.join(base_path, region_mapping[i])
-                    sprite = self.spritesheet.get_sprite_from_file(filename)
-                    tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
+                    # sprite = self.spritesheet.get_sprite_from_file(filename)
+                    startx = x * tile_size
+                    starty = y * tile_size + 600
+                    tile = Tile(filename, startx, starty)
+
                     if i == -2:
-                        spawns.append(tile)
+                        self.enemies.add(tile)
                     else:
-                        self.tiles.append(tile)
+                        if i == 17:
+                            self.end_goal.add(tile)
+                        else:
+                            self.tiles.add(tile)
+
                     x +=1
             y_counter -= 1
 
@@ -432,44 +442,44 @@ class TileMap:
         for tile in self.tiles:
             surface.blit(tile.image, tile.rect.topleft)
     def return_spawns(self):
-        return spawns
+        return self.spawns
 
 
-pygame.init()
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 350
-FPS = 60
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption("Your Game Title")
-map_filename = "test.csv"
-spritesheet = Spritesheet()  # Create an instance of Spritesheet
-my_map = Map(map_filename)
+# pygame.init()
+# SCREEN_WIDTH = 1000
+# SCREEN_HEIGHT = 350
+# FPS = 60
+# screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+# pygame.display.set_caption("Your Game Title")
+# map_filename = "map.csv"
+# spritesheet = Spritesheet()  # Create an instance of Spritesheet
+# my_map = Map(map_filename)
 
 
-tile_map = TileMap(spritesheet, my_map.stitch_map())
+# tile_map = TileMap(spritesheet, my_map.stitch_map())
 
-clock = pygame.time.Clock()
+# clock = pygame.time.Clock()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+# running = True
+# while running:
+#     for event in pygame.event.get():
+#         if event.type == pygame.QUIT:
+#             running = False
 
-    tile_map.load_map()
+#     tile_map.load_map()
 
-    # Drawing
-    screen.fill((255, 255, 255))  # Set background color (adjust as needed)
+#     # Drawing
+#     screen.fill((255, 255, 255))  # Set background color (adjust as needed)
 
-    tile_map.draw_map(screen)
+#     tile_map.draw_map(screen)
 
-    pygame.display.flip()
+#     pygame.display.flip()
 
-    # Cap the frame rate
-    clock.tick(FPS)
+#     # Cap the frame rate
+#     clock.tick(FPS)
 
-# Quit Pygame properly
-pygame.quit()
+# # Quit Pygame properly
+# pygame.quit()
 
     
         

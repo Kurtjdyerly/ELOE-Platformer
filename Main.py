@@ -186,7 +186,7 @@ def game_loop(screen, clock):
     enemy = Enemy(600, 200)
     enemies.add(enemy)
 
-    map_filename = "test.csv"
+    map_filename = "map.csv"
     spritesheet = Spritesheet()  # Create an instance of Spritesheet
     my_map = Map(map_filename)
     tile_map = TileMap(spritesheet, my_map.stitch_map())
