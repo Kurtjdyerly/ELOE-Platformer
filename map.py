@@ -35,21 +35,21 @@ class Map:
     # Gets the beginning maps (first 5) from the total list 
     def get_beg(self):
         beginning_maps = []
-        for item in self.chunk_map[:5]:
+        for item in self.chunk_map[:10]:
             beginning_maps.append(item)
         return beginning_maps
     
     # Get the middle section maps (between the first 5 and the last 5) from the total list
     def get_mid(self):
         middle_maps = []
-        for item in self.chunk_map[5:-5]:
+        for item in self.chunk_map[10:-11]:
             middle_maps.append(item)
         return middle_maps
     
     # Gets the last map sections from the last 5
     def get_end(self):
         end_maps = []
-        for item in self.chunk_map[-5:]:
+        for item in self.chunk_map[-11:]:
             end_maps.append(item)
         return end_maps
     
@@ -61,7 +61,7 @@ class Map:
         middle_maps = self.get_mid()
         end_maps = self.get_end()
 
-        random_number = random.randint(0, 4)
+        random_number = random.randint(0, 9)
         beginning_maps[random_number].reverse()
         completed_map.extend(beginning_maps[random_number])
         beginning_maps[random_number].reverse()
@@ -73,7 +73,7 @@ class Map:
             completed_map.extend(middle_maps[random_number])
             middle_maps[random_number].reverse()
 
-        random_number = random.randint(0, 4)
+        random_number = random.randint(0, 10)
         end_maps[random_number].reverse()
         completed_map.extend(end_maps[random_number])
         end_maps[random_number].reverse()
@@ -110,6 +110,7 @@ class Tile:
 
 class TileMap:
     spawns = []
+    edge = []
     def __init__(self, spritesheet, completed_map):
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
@@ -124,6 +125,7 @@ class TileMap:
         tile_size = self.tile_size
 
         region_mapping = {
+            -3: "lava.jpg"
             0: "tile000.png",
             1: "tile001.png",
             2: "tile002.png",
@@ -159,10 +161,10 @@ class TileMap:
 
         base_path = os.path.abspath("assets")
         x_counter = 0
-        y_counter = 4
+        y_counter = 5
         for row in self.completed_map:
             if y_counter <0:
-                y_counter =4
+                y_counter =5
                 x_counter = x_counter +25
 
             x = x_counter
@@ -179,6 +181,8 @@ class TileMap:
                     tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
                     if i == -2:
                         spawns.append(tile)
+                    else if i == -3:
+                        edge.append(tile)
                     else:
                         self.tiles.append(tile)
                     x +=1
@@ -189,6 +193,8 @@ class TileMap:
             surface.blit(tile.image, tile.rect.topleft)
     def return_spawns(self):
         return spawns
+    def return_bottom(self):
+        return edge
 
 
 pygame.init()
