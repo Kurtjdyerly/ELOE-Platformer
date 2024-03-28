@@ -35,9 +35,9 @@ class Player(Sprite): # Player Sprite
         self.stand_image = pygame.image.load("./Assets/p2_front_1.png")
         self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
 
-        self.jump_image = pygame.image.load("./assets/jump_1.gif")
+        # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
         self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,8)]
-        self.jump_image = pygame.transform.scale(self.jump_image, (width, height)) # Scale down the image
+        self.jump_cycle = [pygame.transform.scale(image, (width, height)) for image in self.jump_cycle] # Scale down the image
 
         self.walk_cycle = [pygame.image.load(f"./assets/p2_walk{i:0>2}.png") for i in range(1, 6)]
         self.walk_cycle = [pygame.transform.scale(image, (width, height)) for image in self.walk_cycle]
