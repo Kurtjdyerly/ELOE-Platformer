@@ -188,7 +188,7 @@ class TileMap:
                     else:
                         if i == 17:
                             self.end_goal.add(tile)
-                        else if i == -2"
+                        else if i == -3"
                             self.edge.add(tile)
                         else:
                             self.tiles.add(tile)
