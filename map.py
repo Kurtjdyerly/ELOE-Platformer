@@ -126,7 +126,7 @@ class TileMap:
         tile_size = self.tile_size
 
         region_mapping = {
-            -2: "lava.jpg",
+            -3: "lava.jpg",
             0: "tile000.png",
             1: "tile001.png",
             2: "tile002.png",
