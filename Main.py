@@ -26,22 +26,24 @@ class Sprite(pygame.sprite.Sprite): # Superclass for Sprites
 
 class Player(Sprite): # Player Sprite
     def __init__(self, startx, starty):
-        super().__init__("./Assets/p1_front.png", startx, starty) # Initiliazes with starting image
+        super().__init__("./Assets/p2_front_1.png", startx, starty) # Initiliazes with starting image
         height = 70
         width = 70
         self.is_alive = True
         self.has_won = False
         self.image = pygame.transform.scale(self.image, (width, height))
-        self.stand_image = pygame.image.load("./Assets/p1_front.png")
+        self.stand_image = pygame.image.load("./Assets/p2_front_1.png")
         self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
 
-        self.jump_image = pygame.image.load("./assets/p1_front.png")
-        self.jump_image = pygame.transform.scale(self.jump_image, (width, height)) # Scale down the image
+        # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
+        self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,8)]
+        self.jump_cycle = [pygame.transform.scale(image, (width, height)) for image in self.jump_cycle] # Scale down the image
 
-        self.walk_cycle = [pygame.image.load(f"./assets/p1_walk{i:0>2}.png") for i in range(1, 12)]
+        self.walk_cycle = [pygame.image.load(f"./assets/p2_walk{i:0>2}.png") for i in range(1, 6)]
         self.walk_cycle = [pygame.transform.scale(image, (width, height)) for image in self.walk_cycle]
         
         self.animation_index = 0
+        self.animation_jump_index = 0
         self.facing_left = False
 
         self.rect = self.stand_image.get_rect()
@@ -66,9 +68,14 @@ class Player(Sprite): # Player Sprite
             self.animation_index = 0
 
     def jump_animation(self):
-        self.image = self.jump_image
+        self.image = self.jump_cycle[self.animation_jump_index]
         if self.facing_left:
             self.image = pygame.transform.flip(self.image, True, False)
+
+        if self.animation_jump_index < len(self.jump_cycle)-1:
+            self.animation_jump_index += 1
+        else:
+            self.animation_jump_index = 0
 
     def update(self, environment, enemies, goal):
         hsp = 0 # Horizontal Speed
