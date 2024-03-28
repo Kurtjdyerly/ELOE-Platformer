@@ -1,4 +1,5 @@
 import pygame, csv, os, random
+from Main import Enemy, Goal
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 class Sprite(pygame.sprite.Sprite): # Superclass for Sprites
@@ -425,14 +426,17 @@ class TileMap:
                     # sprite = self.spritesheet.get_sprite_from_file(filename)
                     startx = x * tile_size
                     starty = y * tile_size + 600
-                    tile = Tile(filename, startx, starty)
+                    
 
                     if i == -2:
+                        tile = Enemy(filename, startx, starty)
                         self.enemies.add(tile)
                     else:
                         if i == 17:
+                            tile = Goal(filename, startx, starty)
                             self.end_goal.add(tile)
                         else:
+                            tile = Tile(filename, startx, starty)
                             self.tiles.add(tile)
 
                     x +=1
