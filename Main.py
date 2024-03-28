@@ -162,42 +162,6 @@ class Player(Sprite): # Player Sprite
         collide = pygame.sprite.spritecollideany(self, grounds)
         self.rect.move_ip([-x, -y])
         return collide
-    
-class Goal(Sprite):
-    def __init__(self, image, startx, starty, width = 70, height = 70):
-        super().__init__(image, startx, starty)
-        self.image = pygame.transform.scale(self.image, (width, height))
-    
-class Enemy(Sprite): # Enemy Sprites
-    def __init__(self, startx, starty, width = 50, height = 50):
-        super().__init__("./Assets/enemy_sprite.png", startx, starty)
-        self.image = pygame.transform.scale(self.image, (width,height))
-        self.speed = 2
-        self.direction = 1  # 1 for right, -1 for left
-
-    def create_invisible_walls(self, environment):
-    # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
-        if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or \
-                self.rect.left > WIDTH - 5 or self.rect.right < 5:
-            # Create invisible walls
-            invisible_wall_left = Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            invisible_wall_right = Box(self.rect.right, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            environment.add(invisible_wall_left)
-            environment.add(invisible_wall_right)
-
-    def update(self, boxes):
-        self.rect.x += self.speed * self.direction
-        # Reverse direction if reaching boundaries
-        if self.rect.left < 0 or self.rect.right > WIDTH:
-            self.direction *= -1
-        
-        collision_list = pygame.sprite.spritecollide(self, boxes, False)
-        for box in collision_list:
-            # Collision handling
-            # For example, you can change the enemy's direction upon collision
-            self.direction *= -1  # Reverse direction
 
 
         
