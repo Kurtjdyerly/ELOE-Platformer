@@ -107,25 +107,26 @@ class Tile:
     def draw(self, surface):
        surface.blit(self.image, (self.rect.x, self.rect.y))
 
-
+    
 class TileMap:
-    spawns = []
-    edge = []
     def __init__(self, spritesheet, completed_map):
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
         self.completed_map = completed_map
-        self.tiles = []
+        self.tiles = pygame.sprite.Group()
+        self.enemies = pygame.sprite.Group()
+        self.edge = pygame.sprite.Group()
+        self.end_goal = pygame.sprite.Group()
         self.load_map()
 
     def load_map(self):
-        self.tiles.clear()  # Clear existing tiles
+        # self.tiles.clear()  # Clear existing tiles
 
         x, y = 0, 0
         tile_size = self.tile_size
 
         region_mapping = {
-            -3: "lava.jpg"
+            -2: "lava.jpg",
             0: "tile000.png",
             1: "tile001.png",
             2: "tile002.png",
@@ -177,14 +178,21 @@ class TileMap:
                 else:
                     y = y_counter
                     filename = os.path.join(base_path, region_mapping[i])
-                    sprite = self.spritesheet.get_sprite_from_file(filename)
-                    tile = Tile(sprite, x * tile_size, y * tile_size, target_size=(70, 70))
+                    # sprite = self.spritesheet.get_sprite_from_file(filename)
+                    startx = x * tile_size
+                    starty = y * tile_size + 600
+                    tile = Tile(filename, startx, starty)
+
                     if i == -2:
-                        spawns.append(tile)
-                    else if i == -3:
-                        edge.append(tile)
+                        self.enemies.add(tile)
                     else:
-                        self.tiles.append(tile)
+                        if i == 17:
+                            self.end_goal.add(tile)
+                        else if i == -2"
+                            self.edge.add(tile)
+                        else:
+                            self.tiles.add(tile)
+
                     x +=1
             y_counter -= 1
 
@@ -192,9 +200,9 @@ class TileMap:
         for tile in self.tiles:
             surface.blit(tile.image, tile.rect.topleft)
     def return_spawns(self):
-        return spawns
+        return self.spawns
     def return_bottom(self):
-        return edge
+        return self.edge
 
 
 pygame.init()
