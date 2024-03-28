@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="left-down" width="25" height="5" tilewidth="70" tileheight="70" infinite="0" nextlayerid="2" nextobjectid="1">
+ <editorsettings>
+  <export target="Tile 51.csv" format="csv"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../../../Downloads/Stretched tilesheet.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="25" height="5">
+  <data encoding="csv">
+0,0,0,4,3,3,3,3,3,3,3,3,3,0,0,0,0,3,0,0,0,0,0,0,0,
+4,0,0,4,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,
+3,0,0,0,0,0,0,0,0,0,0,0,3,0,0,2,2,2,2,0,3,3,3,3,3,
+3,4,3,4,0,3,3,0,3,0,3,0,3,0,0,3,3,3,3,0,3,3,3,3,3
+</data>
+ </layer>
+</map>
