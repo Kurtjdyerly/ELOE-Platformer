@@ -48,7 +48,7 @@ class Player(Sprite): # Player Sprite
         
         self.rect.center = (startx, starty)
 
-        self.speed = 10
+        self.speed = 4
         self.jumpspeed = 20
         self.vsp = 0 # Vertical Speed
         self.gravity = 1
