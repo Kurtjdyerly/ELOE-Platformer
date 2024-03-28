@@ -3,7 +3,7 @@ from pygame import mixer
 
 def sound():
     mixer.init()
-    mixer.music.load("C:\\Users\\shaun\\Desktop\\Shaun\\Winter2024Classes\\Applied_Programming\\ELOE-Platformer\\Assets\\SpaceMusic1Edit.wav")
+    mixer.music.load("Assets/SpaceMusic1Edit.wav")
     mixer.music.set_volume(0.2)
     mixer.music.play()
     # while True:

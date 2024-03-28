@@ -1,6 +1,6 @@
 # intial Code from https://docs.replit.com/tutorials/python/2d-platform-game
 import pygame, numpy, sound, sys
-
+from map import Tile, TileMap, Spritesheet, Map
 WIDTH = 800
 HEIGHT = 600
 BACKGROUND = (0, 0, 0)
@@ -186,12 +186,22 @@ def game_loop(screen, clock):
     enemy = Enemy(600, 200)
     enemies.add(enemy)
 
-    environment = pygame.sprite.Group()
-    for bx in range(-10000, 10000, 70):
-        environment.add(Box(bx, 400))
+    map_filename = "map.csv"
+    spritesheet = Spritesheet()  # Create an instance of Spritesheet
+    my_map = Map(map_filename)
+    tile_map = TileMap(spritesheet, my_map.stitch_map())
+    tile_map.load_map()
+    environment = tile_map.tiles
 
-    environment.add(Box(330, 230))
-    environment.add(Box(400, 70))
+
+    
+
+    # environment = pygame.sprite.Group()
+    # for bx in range(-10000, 10000, 70):
+    #     environment.add(Box(bx, 400))
+ 
+    # environment.add(Box(330, 230))
+    # environment.add(Box(400, 70))
 
     sound.sound()
     print("Game initialized!")
@@ -220,7 +230,7 @@ def game_loop(screen, clock):
 def title_screen(screen):
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
-    title_text = font.render("2D Platformer Game", True, (255, 255, 255))
+    title_text = font.render("E.L.O.E.", True, (255, 255, 255))
     start_text = font.render("Press 'S' to start", True, (255, 255, 255))
     controls_text = font.render("Press 'C' for controls", True, (255, 255, 255))
     quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
@@ -279,6 +289,7 @@ def game_over_screen(screen):
     pygame.display.flip()
 
     while True:
+        pygame.event.get()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
