@@ -101,21 +101,21 @@ class Map:
     # Gets the beginning maps (first 5) from the total list 
     def get_beg(self):
         beginning_maps = []
-        for item in self.chunk_map[:5]:
+        for item in self.chunk_map[:10]:
             beginning_maps.append(item)
         return beginning_maps
     
     # Get the middle section maps (between the first 5 and the last 5) from the total list
     def get_mid(self):
         middle_maps = []
-        for item in self.chunk_map[5:-5]:
+        for item in self.chunk_map[10:-11]:
             middle_maps.append(item)
         return middle_maps
     
     # Gets the last map sections from the last 5
     def get_end(self):
         end_maps = []
-        for item in self.chunk_map[-5:]:
+        for item in self.chunk_map[-11:]:
             end_maps.append(item)
         return end_maps
     
@@ -127,6 +127,7 @@ class Map:
         middle_maps = self.get_mid()
         end_maps = self.get_end()
 
+<<<<<<< HEAD
         random_number = random.randint(0, 4)
         completed_map.extend(beginning_maps[random_number])
 
@@ -345,6 +346,9 @@ class Map:
         end_maps = self.get_end()
 
         random_number = random.randint(0, 4)
+=======
+        random_number = random.randint(0, 9)
+>>>>>>> map_update
         beginning_maps[random_number].reverse()
         completed_map.extend(beginning_maps[random_number])
         beginning_maps[random_number].reverse()
@@ -356,7 +360,7 @@ class Map:
             completed_map.extend(middle_maps[random_number])
             middle_maps[random_number].reverse()
 
-        random_number = random.randint(0, 4)
+        random_number = random.randint(0, 10)
         end_maps[random_number].reverse()
         completed_map.extend(end_maps[random_number])
         end_maps[random_number].reverse()
@@ -391,15 +395,22 @@ class Tile(Sprite):
     def draw(self, surface):
        surface.blit(self.image, (self.rect.x, self.rect.y))
 
-
-class TileMap:
     
+class TileMap:
+<<<<<<< HEAD
+    
+=======
+>>>>>>> map_update
     def __init__(self, spritesheet, completed_map):
         self.tile_size = 70
         self.spritesheet = spritesheet  # Added this line to store the spritesheet
         self.completed_map = completed_map
         self.tiles = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
+<<<<<<< HEAD
+=======
+        self.edge = pygame.sprite.Group()
+>>>>>>> map_update
         self.end_goal = pygame.sprite.Group()
         self.load_map()
 
@@ -410,6 +421,7 @@ class TileMap:
         tile_size = self.tile_size
 
         region_mapping = {
+            -3: "lava.jpg",
             0: "tile000.png",
             1: "tile001.png",
             2: "tile002.png",
@@ -445,10 +457,10 @@ class TileMap:
 
         base_path = os.path.abspath("assets")
         x_counter = 0
-        y_counter = 4
+        y_counter = 5
         for row in self.completed_map:
             if y_counter <0:
-                y_counter =4
+                y_counter =5
                 x_counter = x_counter +25
 
             x = x_counter
@@ -464,6 +476,7 @@ class TileMap:
                     # sprite = self.spritesheet.get_sprite_from_file(filename)
                     startx = x * tile_size
                     starty = y * tile_size + 600
+<<<<<<< HEAD
                     
 
                     if i == -2:
@@ -475,6 +488,18 @@ class TileMap:
                             self.end_goal.add(tile)
                         else:
                             tile = Tile(filename, startx, starty)
+=======
+                    tile = Tile(filename, startx, starty)
+
+                    if i == -2:
+                        self.enemies.add(tile)
+                    else:
+                        if i == 17:
+                            self.end_goal.add(tile)
+                        else if i == -3"
+                            self.edge.add(tile)
+                        else:
+>>>>>>> map_update
                             self.tiles.add(tile)
 
                     x +=1
@@ -485,6 +510,11 @@ class TileMap:
             surface.blit(tile.image, tile.rect.topleft)
     def return_spawns(self):
         return self.spawns
+<<<<<<< HEAD
+=======
+    def return_bottom(self):
+        return self.edge
+>>>>>>> map_update
 
 
 # pygame.init()
