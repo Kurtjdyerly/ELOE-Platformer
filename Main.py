@@ -174,13 +174,14 @@ class Player(Sprite): # Player Sprite
         
 def game_loop(screen, clock):
     player = Player(WIDTH / 2, HEIGHT / 2)
-    enemies = pygame.sprite.Group()
 
     map_filename = "map.csv"
     spritesheet = Spritesheet()  # Create an instance of Spritesheet
     my_map = Map(map_filename)
     tile_map = TileMap(spritesheet, my_map.stitch_map())
     tile_map.load_map()
+
+    enemies = tile_map.enemies
     environment = tile_map.tiles
     goal = tile_map.end_goal
 
