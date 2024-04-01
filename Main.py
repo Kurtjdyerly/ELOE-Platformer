@@ -27,15 +27,28 @@ class Sprite(pygame.sprite.Sprite): # Superclass for Sprites
 class Player(Sprite): # Player Sprite
     def __init__(self, startx, starty):
         super().__init__("./Assets/p2_front_1.png", startx, starty) # Initiliazes with starting image
-        self.stand_image = self.image # Adds additional images and data
-        self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
+        height = 70
+        width = 70
         self.is_alive = True
+        self.has_won = False
+        self.image = pygame.transform.scale(self.image, (width, height))
+        self.stand_image = pygame.image.load("./Assets/p2_front_1.png")
+        self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
 
+        # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
         self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,8)]
-        self.walk_cycle = [pygame.image.load(f"./assets/p2_walk{i:0>2}.png") for i in range(1,6)] # Iterate through the walking images to create an animation
+        self.jump_cycle = [pygame.transform.scale(image, (width, height)) for image in self.jump_cycle] # Scale down the image
+
+        self.walk_cycle = [pygame.image.load(f"./assets/p2_walk{i:0>2}.png") for i in range(1, 6)]
+        self.walk_cycle = [pygame.transform.scale(image, (width, height)) for image in self.walk_cycle]
+        
         self.animation_index = 0
         self.animation_jump_index = 0
         self.facing_left = False
+
+        self.rect = self.stand_image.get_rect()
+        
+        self.rect.center = (startx, starty)
 
         self.speed = 4
         self.jumpspeed = 20
@@ -64,7 +77,7 @@ class Player(Sprite): # Player Sprite
         else:
             self.animation_jump_index = 0
 
-    def update(self, environment, enemies):
+    def update(self, environment, enemies, goal):
         hsp = 0 # Horizontal Speed
         onground = self.check_collision(0, 1, environment)
         
@@ -101,16 +114,19 @@ class Player(Sprite): # Player Sprite
 
 
         # movement
-        self.move(hsp, self.vsp, environment, enemies)
+        self.move(hsp, self.vsp, environment, enemies, goal)
         
         enemy_collision = pygame.sprite.spritecollideany(self, enemies)
-        
+        goal_collision = pygame.sprite.spritecollideany(self, goal)
         if enemy_collision: # Kills player on collision with enemy sprite
             self.is_alive = False
             print("Player died!")
         
+        if goal_collision:
+            self.has_won = True
+        
 
-    def move(self, x, y, environment, enemies):
+    def move(self, x, y, environment, enemies, goal):
         dx = x
         dy = y
         dxPlayer = 0
@@ -137,6 +153,9 @@ class Player(Sprite): # Player Sprite
         for sprite in enemies.sprites():
             sprite.rect.x -= dx
             sprite.rect.y -= dy
+        for sprite in goal.sprites(): # Iterate through sprites to move them
+            sprite.rect.x -= dx
+            sprite.rect.y -= dy
         # dxPlayer = (dx * (numpy.sin( self.rect.x *((4 * numpy.pi) / WIDTH))))
         # if(WIDTH / 4 < self.rect.x < (3 * WIDTH / 4)):
         #     dxPlayer = -(dx * (numpy.sin( self.rect.x/WIDTH *(4 * numpy.pi))))
@@ -150,48 +169,12 @@ class Player(Sprite): # Player Sprite
         collide = pygame.sprite.spritecollideany(self, grounds)
         self.rect.move_ip([-x, -y])
         return collide
-    
-class Enemy(Sprite): # Enemy Sprites
-    def __init__(self, startx, starty, width = 50, height = 50):
-        super().__init__("./Assets/enemy_sprite.png", startx, starty)
-        self.image = pygame.transform.scale(self.image, (width,height))
-        self.speed = 2
-        self.direction = 1  # 1 for right, -1 for left
-
-    def create_invisible_walls(self, environment):
-    # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
-        if not any(isinstance(sprite, Box) for sprite in environment.sprites()) or \
-                self.rect.left > WIDTH - 5 or self.rect.right < 5:
-            # Create invisible walls
-            invisible_wall_left = Box(self.rect.left - INVISIBLE_WALL_WIDTH, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            invisible_wall_right = Box(self.rect.right, self.rect.top,
-                                        INVISIBLE_WALL_WIDTH, self.rect.height)
-            environment.add(invisible_wall_left)
-            environment.add(invisible_wall_right)
-
-    def update(self, boxes):
-        self.rect.x += self.speed * self.direction
-        # Reverse direction if reaching boundaries
-        if self.rect.left < 0 or self.rect.right > WIDTH:
-            self.direction *= -1
-        
-        collision_list = pygame.sprite.spritecollide(self, boxes, False)
-        for box in collision_list:
-            # Collision handling
-            # For example, you can change the enemy's direction upon collision
-            self.direction *= -1  # Reverse direction
 
 
-class Box(Sprite):
-    def __init__(self, startx, starty):
-        super().__init__("./assets/box.png", startx, starty)
         
 def game_loop(screen, clock):
     player = Player(WIDTH / 2, HEIGHT / 2)
     enemies = pygame.sprite.Group()
-    enemy = Enemy(600, 200)
-    enemies.add(enemy)
 
     map_filename = "map.csv"
     spritesheet = Spritesheet()  # Create an instance of Spritesheet
@@ -199,9 +182,8 @@ def game_loop(screen, clock):
     tile_map = TileMap(spritesheet, my_map.stitch_map())
     tile_map.load_map()
     environment = tile_map.tiles
+    goal = tile_map.end_goal
 
-
-    
 
     # environment = pygame.sprite.Group()
     # for bx in range(-10000, 10000, 70):
@@ -215,8 +197,17 @@ def game_loop(screen, clock):
 
     while True:
         pygame.event.pump()
-        player.update(environment, enemies)
-        enemy.update(environment)
+                # Handle pause key
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+                pause_menu(screen)
+
+
+
+
+        player.update(environment, enemies, goal)
+        enemies.update(environment)
+        goal.update()
 
         if not player.is_alive:
             if game_over_screen(screen):
@@ -226,10 +217,19 @@ def game_loop(screen, clock):
             else:
                 return  
         
+        if player.has_won:
+            if win_screen(screen):
+                player.has_won = False
+                player.rect.center = [WIDTH / 2, HEIGHT / 2]
+            else:
+                return
+        
         screen.fill(BACKGROUND)
         player.draw(screen)
         enemies.draw(screen)
         environment.draw(screen)
+        goal.draw(screen)
+
         pygame.display.flip()
 
         clock.tick(60)
@@ -249,6 +249,38 @@ def title_screen(screen):
 
     pygame.display.flip()
 
+def pause_menu(screen):
+    screen.fill(BACKGROUND)
+    font = pygame.font.Font(None, 36)
+    pause_text = font.render("Game Paused", True, (255, 255, 255))
+    resume_text = font.render("Press 'R' to resume", True, (255, 255, 255))
+    try_again_text = font.render("Press 'T' to try again", True, (255, 255, 255))
+    quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
+
+    screen.blit(pause_text, (WIDTH // 2 - pause_text.get_width() // 2, 200))
+    screen.blit(resume_text, (WIDTH // 2 - resume_text.get_width() // 2, 300))
+    screen.blit(try_again_text, (WIDTH // 2 - try_again_text.get_width() // 2, 350))
+    screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, 400))
+
+    pygame.display.flip()
+
+    while True:
+        pygame.event.get()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return
+                elif event.key == pygame.K_t:
+                    clock = pygame.time.Clock()
+                    game_loop(screen, clock)
+                    return True
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+                
 def show_controls(screen):
     font = pygame.font.Font(None, 36)
     title_text = font.render("Controls", True, (255, 255, 255))
@@ -286,6 +318,34 @@ def game_over_screen(screen):
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
     game_over_text = font.render("Game Over", True, (255, 0, 0))
+    try_again_text = font.render("Press 'T' to try again", True, (255, 255, 255))
+    quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
+
+    screen.blit(game_over_text, (WIDTH // 2 - game_over_text.get_width() // 2, 200))
+    screen.blit(try_again_text, (WIDTH // 2 - try_again_text.get_width() // 2, 300))
+    screen.blit(quit_text, (WIDTH // 2 - quit_text.get_width() // 2, 350))
+
+    pygame.display.flip()
+
+    while True:
+        pygame.event.get()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_t:
+                    clock = pygame.time.Clock()
+                    game_loop(screen, clock)
+                    return True
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+
+def win_screen(screen):
+    screen.fill(BACKGROUND)
+    font = pygame.font.Font(None, 36)
+    game_over_text = font.render("You Win", True, (255, 0, 0))
     try_again_text = font.render("Press 'T' to try again", True, (255, 255, 255))
     quit_text = font.render("Press 'Q' to quit", True, (255, 255, 255))
 
