@@ -317,7 +317,8 @@ def show_controls(screen):
         font.render("S: Start game", True, (255, 255, 255)),
         font.render("Q: Quit game", True, (255, 255, 255)),
         font.render("P: Pause music", True, (255, 255, 255)),
-        font.render("R: Resume music", True, (255, 255, 255))
+        font.render("R: Resume music", True, (255, 255, 255)),
+        font.render("Esc: Pause Menu", True, (255, 255, 255))
     ]
 
     screen.fill(BACKGROUND)
@@ -326,7 +327,7 @@ def show_controls(screen):
     y_offset = 200
     for text in controls_text:
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, y_offset))
-        y_offset += 50
+        y_offset += 40
 
     screen.blit(back_text, (WIDTH // 2 - back_text.get_width() // 2, 500))
     pygame.display.flip()
