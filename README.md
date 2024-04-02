@@ -2,7 +2,7 @@
 
 <p>
 This project was a collaboration to make a game in the platformer genre using pygame.
-The code uses a csv file to store map data, then builds random maps. The code uses key presses as controls and loops through the game state to check changes and collisions.
+The code uses a csv file to store map data, then builds random maps. We used key presses as controls and loop through the game state to check changes and collisions.
 </p>
 
 [Software Demo Video]() <!--Will need the link to the demo when it's made-->
@@ -11,8 +11,10 @@ The code uses a csv file to store map data, then builds random maps. The code us
 
 - Python
 - pygame
-    - mixer
-    - music
+    - Mixer
+    - Music
+- CSV
+- Numpy
 - Visual Studio Code
 
 # Collaborators
@@ -37,7 +39,8 @@ The code uses a csv file to store map data, then builds random maps. The code us
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-* Item 1
-* Item 2
-* Item 3
+* Customized soundtrack and sound effects
+* Plot and dialogue
+* Improved textures
+* Enemy variation
+* Improved combat including equipment
