@@ -36,7 +36,7 @@ class Player(Sprite): # Player Sprite
         self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
 
         # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
-        self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,8)]
+        self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,10)]
         self.jump_cycle = [pygame.transform.scale(image, (width, height)) for image in self.jump_cycle] # Scale down the image
 
         self.walk_cycle = [pygame.image.load(f"./assets/p2_walk{i:0>2}.png") for i in range(1, 6)]
@@ -96,6 +96,7 @@ class Player(Sprite): # Player Sprite
 
         if key[pygame.K_UP] and onground:
             self.vsp = -self.jumpspeed
+            sound.jumping()
 
         # variable height jumping
         if self.prev_key[pygame.K_UP] and not key[pygame.K_UP]:
@@ -201,6 +202,12 @@ def game_loop(screen, clock):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
                 pause_menu(screen)
+        # if keys[pygame.K_p]: Another way to run pause and unpause
+        #     mixer.music.pause()
+        # elif keys[pygame.K_r]:
+        #     mixer.music.unpause()
+        sound.pause(keys)
+        sound.resume(keys)
 
 
 
@@ -210,6 +217,7 @@ def game_loop(screen, clock):
         goal.update()
 
         if not player.is_alive:
+            sound.death()
             if game_over_screen(screen):
                 # Restart the game
                 player.is_alive = True
@@ -289,7 +297,9 @@ def show_controls(screen):
         font.render("Arrow keys: Move", True, (255, 255, 255)),
         font.render("Up arrow: Jump", True, (255, 255, 255)),
         font.render("S: Start game", True, (255, 255, 255)),
-        font.render("Q: Quit game", True, (255, 255, 255))
+        font.render("Q: Quit game", True, (255, 255, 255)),
+        font.render("P: Pause music", True, (255, 255, 255)),
+        font.render("R: Resume music", True, (255, 255, 255))
     ]
 
     screen.fill(BACKGROUND)

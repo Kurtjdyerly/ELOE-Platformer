@@ -1,32 +1,27 @@
 # Initial Code from https://www.educative.io/answers/how-to-play-an-audio-file-in-pygame
+import pygame
 from pygame import mixer
 
 def sound():
     mixer.init()
     mixer.music.load("Assets/SpaceMusic1Edit.wav")
     mixer.music.set_volume(0.2)
-    mixer.music.play()
-    # while True:
-    #     print("Press 'p' to pause the music")
-    #     print("Press 'r' to resume the music")
-    #     print("Press 'e' to exit the program")
-    
-    #     #take user input
-    #     userInput = input(" ")
-        
-    #     if userInput == 'p':
+    mixer.music.play(-1)
 
-    #         # Pause the music
-    #         mixer.music.pause()	
-    #         print("music is paused....")
-    #     elif userInput == 'r':
+def pause(key):
+    if key[pygame.K_p]:
+        mixer.music.pause()
 
-    #         # Resume the music
-    #         mixer.music.unpause()
-    #         print("music is resumed....")
-    #     elif userInput == 'e':
+def resume(key):
+    if key[pygame.K_r]:
+        mixer.music.unpause()
 
-    #         # Stop the music playback
-    #         mixer.music.stop()
-    #         print("music is stopped....")
-    #         break
+def death():
+    death_cry = mixer.Sound("Assets\DeathCry1.wav")
+    mixer.Sound.set_volume(death_cry, 0.2)
+    mixer.Sound.play(death_cry)
+
+def jumping():
+    jump_noise = mixer.Sound("Assets\Jump_01.wav")
+    mixer.Sound.set_volume(jump_noise, 0.2)
+    mixer.Sound.play(jump_noise)
