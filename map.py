@@ -21,10 +21,10 @@ class Goal(Sprite):
         self.image = pygame.transform.scale(self.image, (width, height))
     
 class Enemy(Sprite): # Enemy Sprites
-    def __init__(self,filename, startx, starty,speed, width = 70, height = 70):
+    def __init__(self,filename, startx, starty, width = 50, height = 50):
         super().__init__(filename, startx, starty)
         self.image = pygame.transform.scale(self.image, (width,height))
-        self.speed = speed
+        self.speed = 2
         self.direction = 1  # 1 for right, -1 for left
 
     # def create_invisible_walls(self, environment):
@@ -50,6 +50,13 @@ class Enemy(Sprite): # Enemy Sprites
             # Collision handling
             # For example, you can change the enemy's direction upon collision
             self.direction *= -1  # Reverse direction
+
+class Hazard(Sprite): # Enemy Sprites
+    def __init__(self,filename, startx, starty, width = 70, height = 70):
+        super().__init__(filename, startx, starty)
+        self.image = pygame.transform.scale(self.image, (width,height))
+        
+
 
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -183,6 +190,7 @@ class TileMap:
         self.tiles = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.end_goal = pygame.sprite.Group()
+        self.hazards = pygame.sprite.Group()
 
 
     def load_map(self):
@@ -250,18 +258,17 @@ class TileMap:
                     starty = y * tile_size + 600
 
                     if i == -2:
-                        tile = Enemy(filename, startx, starty, 2)
+                        tile = Enemy(filename, startx, starty)
                         self.enemies.add(tile)
                     elif i == -3:
-                        tile = Enemy(filename, startx, starty, 0)
-                        self.enemies.add(tile)
+                        tile = Hazard(filename, startx, starty)
+                        self.hazards.add(tile)
+                    elif i == 17:
+                        tile = Goal(filename, startx, starty)
+                        self.end_goal.add(tile)
                     else:
-                        if i == 17:
-                            tile = Goal(filename, startx, starty)
-                            self.end_goal.add(tile)
-                        else:
-                            tile = Tile(filename, startx, starty)
-                            self.tiles.add(tile)
+                        tile = Tile(filename, startx, starty)
+                        self.tiles.add(tile)
 
                     x +=1
             y_counter -= 1
