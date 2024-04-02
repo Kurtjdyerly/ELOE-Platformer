@@ -16,6 +16,7 @@ The code uses a csv file to store map data, then builds random maps. We used key
 - CSV
 - Numpy
 - Visual Studio Code
+- Tiled
 
 # Collaborators
 
@@ -36,6 +37,7 @@ The code uses a csv file to store map data, then builds random maps. We used key
 - Python
 - pygame 'pip install pygame'
 - numpy 'pip install numpy'
+- Tiled
 
 # Future Work
 
