@@ -277,7 +277,7 @@ class TileMap:
         for tile in self.tiles:
             surface.blit(tile.image, tile.rect.topleft)
     def return_spawns(self):
-        return self.spawns
+        return self.enemies
     def return_bottom(self):
         return self.edge
 
