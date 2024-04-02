@@ -26,7 +26,7 @@ class Sprite(pygame.sprite.Sprite): # Superclass for Sprites
 
 class Player(Sprite): # Player Sprite
     def __init__(self, startx, starty):
-        super().__init__("./Assets/p2_front_1.png", startx, starty) # Initiliazes with starting image
+        super().__init__("./Assets/p2_front_1.png", startx, starty) # Initializes with starting image
         height = 70
         width = 70
         
@@ -62,6 +62,7 @@ class Player(Sprite): # Player Sprite
         self.prev_key = pygame.key.get_pressed()
 
     def walk_animation(self):
+        # Iterate through list of image files to create animation
         self.image = self.walk_cycle[self.animation_index]
         if self.facing_left:
             self.image = pygame.transform.flip(self.image, True, False) # Transforms the images to face left
@@ -72,6 +73,7 @@ class Player(Sprite): # Player Sprite
             self.animation_index = 0
 
     def jump_animation(self):
+        # Iterate through list of image files to create animation
         self.image = self.jump_cycle[self.animation_jump_index]
         if self.facing_left:
             self.image = pygame.transform.flip(self.image, True, False)
@@ -121,6 +123,7 @@ class Player(Sprite): # Player Sprite
         # movement
         self.move(hsp, self.vsp, environment, enemies, goal, hazards)
         
+        # Checks collision with important sprites
         enemy_collision = pygame.sprite.spritecollideany(self, enemies)
         goal_collision = pygame.sprite.spritecollideany(self, goal)
         hazard_collision = pygame.sprite.spritecollideany(self, hazards)
@@ -134,6 +137,7 @@ class Player(Sprite): # Player Sprite
         
 
     def move(self, x, y, environment, enemies, goal, hazards):
+        # Takes all the sprites and moves them with the player
         dx = x
         dy = y
         dxPlayer = 0
@@ -175,6 +179,7 @@ class Player(Sprite): # Player Sprite
 
        
     def check_collision(self, x, y, grounds):
+        # Checks collision and returns a boolean
         self.rect.move_ip([x, y])
         collide = pygame.sprite.spritecollideany(self, grounds)
         self.rect.move_ip([-x, -y])
@@ -182,9 +187,11 @@ class Player(Sprite): # Player Sprite
 
 
 def game_loop(screen, clock):
+    # Base game loop where game is run
     
     player = Player(WIDTH / 2, HEIGHT / 2)
 
+    # Building map
     map_filename = "map.csv"
     spritesheet = Spritesheet()  # Create an instance of Spritesheet
     my_map = Map(map_filename)
@@ -204,7 +211,7 @@ def game_loop(screen, clock):
     # environment.add(Box(330, 230))
     # environment.add(Box(400, 70))
 
-    sound.sound()
+    sound.sound() # Initializing and starting background music
     print("Game initialized!")
 
     while True:
@@ -213,6 +220,7 @@ def game_loop(screen, clock):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
                 pause_menu(screen)
+
         # if keys[pygame.K_p]: Another way to run pause and unpause
         #     mixer.music.pause()
         # elif keys[pygame.K_r]:
@@ -261,6 +269,7 @@ def game_loop(screen, clock):
         clock.tick(60)
 
 def title_screen(screen):
+    # Renders text for the title screen
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
     title_text = font.render("E.L.O.E.", True, (255, 255, 255))
@@ -276,6 +285,7 @@ def title_screen(screen):
     pygame.display.flip()
 
 def pause_menu(screen):
+    # Renders pause menu
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
     pause_text = font.render("Game Paused", True, (255, 255, 255))
@@ -298,8 +308,10 @@ def pause_menu(screen):
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
+                    # Return to previous play
                     return
                 elif event.key == pygame.K_t:
+                    # Restart game
                     clock = pygame.time.Clock()
                     game_loop(screen, clock)
                     return True
@@ -308,10 +320,11 @@ def pause_menu(screen):
                     sys.exit()
                 
 def show_controls(screen):
+    # Renders text and shows controls to user
     font = pygame.font.Font(None, 36)
     title_text = font.render("Controls", True, (255, 255, 255))
     back_text = font.render("Press 'B' to go back", True, (255, 255, 255))
-    controls_text = [
+    controls_text = [# List of controls being rendered
         font.render("Arrow keys: Move", True, (255, 255, 255)),
         font.render("Up arrow: Jump", True, (255, 255, 255)),
         font.render("S: Start game", True, (255, 255, 255)),
@@ -324,7 +337,7 @@ def show_controls(screen):
     screen.fill(BACKGROUND)
     screen.blit(title_text, (WIDTH // 2 - title_text.get_width() // 2, 100))
 
-    y_offset = 200
+    y_offset = 200 # y distance between text
     for text in controls_text:
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, y_offset))
         y_offset += 40
@@ -344,6 +357,7 @@ def show_controls(screen):
                     return
 
 def game_over_screen(screen):
+    # Renders text for game over screen
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
     game_over_text = font.render("Game Over", True, (255, 0, 0))
@@ -364,6 +378,7 @@ def game_over_screen(screen):
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_t:
+                    # Restart game
                     clock = pygame.time.Clock()
                     game_loop(screen, clock)
                     return True
@@ -372,6 +387,7 @@ def game_over_screen(screen):
                     sys.exit()
 
 def win_screen(screen):
+    # Renders text for victory screen
     screen.fill(BACKGROUND)
     font = pygame.font.Font(None, 36)
     game_over_text = font.render("You Win", True, (255, 0, 0))
@@ -391,6 +407,7 @@ def win_screen(screen):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
+                # Restart game
                 if event.key == pygame.K_t:
                     clock = pygame.time.Clock()
                     game_loop(screen, clock)
@@ -400,6 +417,7 @@ def win_screen(screen):
                     sys.exit()
 
 def main():
+    # Game setup
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
@@ -416,7 +434,7 @@ def main():
                     # Start the game
                     game_loop(screen, clock)
                 elif event.key == pygame.K_c:
-                    # Show controls (you can implement this part)
+                    # Show controls
                     show_controls(screen)
                 elif event.key == pygame.K_q:
                     pygame.quit()
