@@ -29,11 +29,15 @@ class Player(Sprite): # Player Sprite
         super().__init__("./Assets/p2_front_1.png", startx, starty) # Initiliazes with starting image
         height = 70
         width = 70
+        
         self.is_alive = True
         self.has_won = False
         self.image = pygame.transform.scale(self.image, (width, height))
         self.stand_image = pygame.image.load("./Assets/p2_front_1.png")
         self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
+
+        self.collision_width = 60  # Adjust as needed
+        self.collision_height = 60  # Adjust as needed
 
         # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
         self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,10)]
@@ -47,7 +51,7 @@ class Player(Sprite): # Player Sprite
         self.facing_left = False
 
         self.rect = self.stand_image.get_rect()
-        
+        self.rect.width = self.collision_width
         self.rect.center = (startx, starty)
 
         self.speed = 4
@@ -77,7 +81,7 @@ class Player(Sprite): # Player Sprite
         else:
             self.animation_jump_index = 0
 
-    def update(self, environment, enemies, goal):
+    def update(self, environment, enemies, goal, hazards):
         hsp = 0 # Horizontal Speed
         onground = self.check_collision(0, 1, environment)
         
@@ -115,19 +119,21 @@ class Player(Sprite): # Player Sprite
 
 
         # movement
-        self.move(hsp, self.vsp, environment, enemies, goal)
+        self.move(hsp, self.vsp, environment, enemies, goal, hazards)
         
         enemy_collision = pygame.sprite.spritecollideany(self, enemies)
         goal_collision = pygame.sprite.spritecollideany(self, goal)
+        hazard_collision = pygame.sprite.spritecollideany(self, hazards)
         if enemy_collision: # Kills player on collision with enemy sprite
             self.is_alive = False
             print("Player died!")
-        
+        if hazard_collision:
+            self.is_alive = False
         if goal_collision:
             self.has_won = True
         
 
-    def move(self, x, y, environment, enemies, goal):
+    def move(self, x, y, environment, enemies, goal, hazards):
         dx = x
         dy = y
         dxPlayer = 0
@@ -157,6 +163,9 @@ class Player(Sprite): # Player Sprite
         for sprite in goal.sprites(): # Iterate through sprites to move them
             sprite.rect.x -= dx
             sprite.rect.y -= dy
+        for sprite in hazards.sprites(): # Iterate through sprites to move them
+            sprite.rect.x -= dx
+            sprite.rect.y -= dy
         # dxPlayer = (dx * (numpy.sin( self.rect.x *((4 * numpy.pi) / WIDTH))))
         # if(WIDTH / 4 < self.rect.x < (3 * WIDTH / 4)):
         #     dxPlayer = -(dx * (numpy.sin( self.rect.x/WIDTH *(4 * numpy.pi))))
@@ -172,16 +181,18 @@ class Player(Sprite): # Player Sprite
         return collide
 
 
-        
 def game_loop(screen, clock):
+    
     player = Player(WIDTH / 2, HEIGHT / 2)
-    enemies = pygame.sprite.Group()
 
     map_filename = "map.csv"
     spritesheet = Spritesheet()  # Create an instance of Spritesheet
     my_map = Map(map_filename)
     tile_map = TileMap(spritesheet, my_map.stitch_map())
     tile_map.load_map()
+
+    enemies = tile_map.enemies
+    hazards = tile_map.hazards
     environment = tile_map.tiles
     goal = tile_map.end_goal
 
@@ -211,9 +222,10 @@ def game_loop(screen, clock):
 
 
 
-
-        player.update(environment, enemies, goal)
+     
+        player.update(environment, enemies, goal, hazards)
         enemies.update(environment)
+        hazards.update()
         goal.update()
 
         if not player.is_alive:
@@ -231,11 +243,17 @@ def game_loop(screen, clock):
                 player.rect.center = [WIDTH / 2, HEIGHT / 2]
             else:
                 return
-        
         screen.fill(BACKGROUND)
+         # Load background image
+        background_image = pygame.image.load("assets/level_background.png").convert()
+        # Scale background image to screen size
+        background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
+
+        screen.blit(background_image, (0, 0))
         player.draw(screen)
         enemies.draw(screen)
         environment.draw(screen)
+        hazards.draw(screen)
         goal.draw(screen)
 
         pygame.display.flip()
