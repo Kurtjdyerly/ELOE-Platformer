@@ -29,11 +29,15 @@ class Player(Sprite): # Player Sprite
         super().__init__("./Assets/p2_front_1.png", startx, starty) # Initiliazes with starting image
         height = 70
         width = 70
+        
         self.is_alive = True
         self.has_won = False
         self.image = pygame.transform.scale(self.image, (width, height))
         self.stand_image = pygame.image.load("./Assets/p2_front_1.png")
         self.stand_image = pygame.transform.scale(self.stand_image, (width, height)) # Scale down the image
+
+        self.collision_width = 60  # Adjust as needed
+        self.collision_height = 60  # Adjust as needed
 
         # self.jump_image = pygame.image.load("./assets/p2_jump_1.gif")
         self.jump_cycle = [pygame.image.load(f"./assets/p2_jump{i:0>2}.png") for i in range(1,8)]
@@ -47,7 +51,7 @@ class Player(Sprite): # Player Sprite
         self.facing_left = False
 
         self.rect = self.stand_image.get_rect()
-        
+        self.rect.width = self.collision_width
         self.rect.center = (startx, starty)
 
         self.speed = 4

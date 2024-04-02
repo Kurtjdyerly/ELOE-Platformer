@@ -21,11 +21,14 @@ class Goal(Sprite):
         self.image = pygame.transform.scale(self.image, (width, height))
     
 class Enemy(Sprite): # Enemy Sprites
-    def __init__(self,filename, startx, starty, width = 50, height = 50):
+    def __init__(self,filename, startx, starty, width = 30, height = 30):
         super().__init__(filename, startx, starty)
         self.image = pygame.transform.scale(self.image, (width,height))
+        
         self.speed = 2
         self.direction = 1  # 1 for right, -1 for left
+        self.rect.width = width
+        self.rect.height = height
 
     # def create_invisible_walls(self, environment):
     # # Check if there are no visible walls or screen edges within 5 spaces of enemy's spawn point
