@@ -5,7 +5,7 @@ This project was a collaboration to make a game in the platformer genre using py
 The code uses a csv file to store map data, then builds random maps. We used key presses as controls and loop through the game state to check changes and collisions.
 </p>
 
-[Software Demo Video]() <!--Will need the link to the demo when it's made-->
+[Software Demo Video](https://youtu.be/Cea67dyIubI) <!--Will need the link to the demo when it's made-->
 
 # Development Environment
 
